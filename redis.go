@@ -119,6 +119,8 @@ func (c *BaseClient) Run(req Req) {
 		return
 	}
 
+	log.Printf("write: %v", req)
+
 	err = c.WriteReq(conn, req)
 	if err != nil {
 		if err := c.ConnPool.Remove(conn); err != nil {

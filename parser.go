@@ -3,6 +3,7 @@ package redis
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/vmihailenco/bufio"
@@ -60,6 +61,7 @@ type reader interface {
 	Read([]byte) (int, error)
 	ReadN(n int) ([]byte, error)
 	Buffered() int
+	Peek(int) ([]byte, error)
 }
 
 func readLine(rd reader) ([]byte, error) {
@@ -164,6 +166,9 @@ func _parseReply(rd reader, typ replyType) (interface{}, error) {
 	if err != nil {
 		return 0, &parserError{err}
 	}
+
+	b, _ := rd.Peek(rd.Buffered())
+	log.Printf("read line: %q, buf: %q", line, b)
 
 	switch line[0] {
 	case '-':
